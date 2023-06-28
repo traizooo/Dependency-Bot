@@ -29,5 +29,5 @@ For detailed installation instructions, please refer to the [Installation Guide]
 
 If you encounter any issues while using the Dependency Update Bot, refer to the [Troubleshooting Guide](troubleshooting.md) for common problems and their solutions.
 
-For any further assistance or questions, please reach out to our support team at [email@example.com].
+For any further assistance or questions, please reach out to our support team at michal.owsiejew23@gmail.com.
 
