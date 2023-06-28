@@ -3,7 +3,7 @@ const readline = require('readline');
 const fs = require('fs');
 const { exec } = require('child_process');
 
-async function checkForUpdates(dependencies, packageJsonPath, updateAll, email, receiveReports) {
+async function checkForUpdates(dependencies, packageJsonPath, updateAll) {
   console.log('Checking for updates...');
 
   const dependenciesToUpdate = [];
@@ -39,14 +39,6 @@ async function checkForUpdates(dependencies, packageJsonPath, updateAll, email, 
       console.log("-------------------------------------------------------")
     });
 
-    if (receiveReports && email) {
-      const sentence = `Email address "${email}" saved for daily reports.`
-      const sentenceLength = sentence.length;
-      console.log("-".repeat(sentenceLength));
-      console.log(sentence);
-      console.log("-".repeat(sentenceLength));
-    }
-
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
@@ -57,14 +49,29 @@ async function checkForUpdates(dependencies, packageJsonPath, updateAll, email, 
 
       if (updateAllResponse.toLowerCase() === 'y') {
         console.log('Updating all dependencies...');
-        exec('npm install', (error) => {
-          if (error) {
-            console.error(`Error updating all dependencies: ${error}`);
-          } else {
-            console.log('All updates completed.');
-            printLogo();
-          }
+        
+        const updateCommands = dependenciesToUpdate.map((dependency) => {
+          const packageName = dependency.packageName;
+          const latestVersion = dependency.latestVersion;
+          
+          return `npm install ${packageName}@${latestVersion}`;
         });
+        
+        if (updateCommands.length > 0) {
+          const command = updateCommands.join(' && ');
+          
+          exec(command, (error) => {
+            if (error) {
+              console.error(`Error updating all dependencies: ${error}`);
+            } else {
+              console.log('All updates completed.');
+              printLogo();
+            }
+          });
+        } else {
+          console.log('No dependencies require an update.');
+          printLogo();
+        }
       } else {
         const updateDependency = async (dependencyToUpdate) => {
           const packageName = dependencyToUpdate.packageName;
