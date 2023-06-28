@@ -4,20 +4,8 @@ The Dependency Update Bot Installation Guide provides step-by-step instructions 
 
 ## Table of Contents
 
-1. [Prerequisites](#prerequisites)
-2. [Installation Steps](#installation-steps)
-3. [Verification](#verification)
-4. [Troubleshooting](#troubleshooting)
-
-## Prerequisites
-
-Before installing the Dependency Update Bot, ensure that you have the following prerequisites:
-
-- [Dependency 1](link) (version X or higher)
-- [Dependency 2](link) (version Y or higher)
-- [Dependency 3](link) (version Z or higher)
-
-Make sure you have the required versions of these dependencies installed before proceeding with the installation.
+1. [Installation Steps](#installation-steps)
+2. [Troubleshooting](#troubleshooting)
 
 ## Installation Steps
 
@@ -26,4 +14,21 @@ To install the Dependency Update Bot, follow these steps:
 1. Clone the repository to your local machine:
 
    ```shell
-   git clone https://github.com/your-username/dependency-update-bot.git
+   git clone https://github.com/traizooo/dependency-bot.git
+
+2. Navigate to the cloned repository:
+   
+   ```shell
+   cd dependency-bot
+
+4. Run command to activate script:
+   
+   ```shell
+   node scanner.js
+
+The bot will now be running and ready to perform dependency updates.
+
+## Troubleshooting
+If you encounter any issues during the installation process or while using the Dependency Update Bot, refer to the Troubleshooting Guide for common problems and their solutions.
+
+For any further assistance or questions, please reach out to our support team at michal.owsiejew23@gmail.com.
