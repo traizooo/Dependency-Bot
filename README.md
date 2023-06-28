@@ -20,7 +20,7 @@ For detailed instructions and examples, please refer to the [User Guide](user-gu
 
 ## Troubleshooting
 
-If you encounter any issues go to [Troubleshooting](troubleshooting.md)
+If you encounter any issues go to [Troubleshooting](troubleshooting.md) page
 
 ## License
 
