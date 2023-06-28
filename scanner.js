@@ -10,18 +10,19 @@ async function testScanner(packageJsonPath) {
     output: process.stdout,
   });
 
-  const answer = await new Promise((resolve) => {
-    rl.question('Update all dependencies? (y/n) ', (response) => {
-      resolve(response.toLowerCase());
-    });
+  rl.question('Do you want to receive daily reports? (y/n) ', (receiveReportsResponse) => {
+    const receiveReports = receiveReportsResponse.toLowerCase() === 'y';
+
+    if (receiveReports) {
+      rl.question('Enter your email address: ', (email) => {
+        rl.close();
+        startUpdateCheck(24 * 60 * 60 * 1000, dependencies, packageJsonPath, email, receiveReports);
+      });
+    } else {
+      rl.close();
+      startUpdateCheck(24 * 60 * 60 * 1000, dependencies, packageJsonPath, null, receiveReports);
+    }
   });
-
-  rl.close();
-
-  const updateAll = answer === 'y';
-  const updateCheckInterval = 24 * 60 * 60 * 1000;
-
-  startUpdateCheck(updateCheckInterval, dependencies, packageJsonPath, updateAll);
 }
 
 testScanner('./package.json');

@@ -3,7 +3,7 @@ const readline = require('readline');
 const fs = require('fs');
 const { exec } = require('child_process');
 
-async function checkForUpdates(dependencies, packageJsonPath, updateAll) {
+async function checkForUpdates(dependencies, packageJsonPath, updateAll, email, receiveReports) {
   console.log('Checking for updates...');
 
   const dependenciesToUpdate = [];
@@ -33,82 +33,88 @@ async function checkForUpdates(dependencies, packageJsonPath, updateAll) {
 
   if (dependenciesToUpdate.length > 0) {
     console.log('Dependencies that require an update:');
+    console.log("-------------------------------------------------------")
     dependenciesToUpdate.forEach((dependency, index) => {
       console.log(`${index + 1}. ${dependency.packageName}: Installed (${dependency.installedVersion}), Latest (${dependency.latestVersion})`);
+      console.log("-------------------------------------------------------")
     });
 
-    if (!updateAll) {
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
+    if (receiveReports && email) {
+      const sentence = `Email address "${email}" saved for daily reports.`
+      const sentenceLength = sentence.length;
+      console.log("-".repeat(sentenceLength));
+      console.log(sentence);
+      console.log("-".repeat(sentenceLength));
+    }
 
-      const updateDependency = async (dependencyToUpdate) => {
-        const packageName = dependencyToUpdate.packageName;
-        const installedVersion = dependencyToUpdate.installedVersion;
-        const latestVersion = dependencyToUpdate.latestVersion;
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
 
-        const answer = await new Promise((resolve) => {
-          rl.question(`Update ${packageName} from ${installedVersion} to ${latestVersion}? (y/n) `, (response) => {
-            resolve(response.toLowerCase());
-          });
+    rl.question('Update all dependencies? (y/n) ', (updateAllResponse) => {
+      rl.close();
+
+      if (updateAllResponse.toLowerCase() === 'y') {
+        console.log('Updating all dependencies...');
+        exec('npm install', (error) => {
+          if (error) {
+            console.error(`Error updating all dependencies: ${error}`);
+          } else {
+            console.log('All updates completed.');
+            printLogo();
+          }
         });
+      } else {
+        const updateDependency = async (dependencyToUpdate) => {
+          const packageName = dependencyToUpdate.packageName;
+          const installedVersion = dependencyToUpdate.installedVersion;
+          const latestVersion = dependencyToUpdate.latestVersion;
 
-        if (answer === 'y') {
-          console.log(`Updating ${packageName}...`);
-          exec(`npm install ${packageName}@${latestVersion}`, (error) => {
-            if (error) {
-              console.error(`Error updating ${packageName}: ${error}`);
-            } else {
-              console.log(`${packageName} updated to version ${latestVersion}.`);
+          const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+          });
+
+          rl.question(`Update ${packageName} from ${installedVersion} to ${latestVersion}? (y/n) `, (answer) => {
+            rl.close();
+
+            if (answer.toLowerCase() === 'y') {
+              console.log(`Updating ${packageName}...`);
+              exec(`npm install ${packageName}@${latestVersion}`, (error) => {
+                if (error) {
+                  console.error(`Error updating ${packageName}: ${error}`);
+                  console.log("-------------------------------------------------------")
+                } else {
+                  console.log(`${packageName} updated to version ${latestVersion}.`);
+                  console.log("-------------------------------------------------------")
+                  updateNextDependency();
+                }
+              });
+            } else if (answer.toLowerCase() === 'n') {
+              console.log(`Skipping update for ${packageName}...`);
+              console.log("-------------------------------------------------------")
               updateNextDependency();
             }
           });
-        } else if (answer === 'n') {
-          console.log(`Skipping update for ${packageName}...`);
-          updateNextDependency();
-        }
-      };
+        };
 
-      let currentIndex = 0;
+        let currentIndex = 0;
 
-      const updateNextDependency = () => {
-        if (currentIndex < dependenciesToUpdate.length) {
-          const dependencyToUpdate = dependenciesToUpdate[currentIndex];
-          currentIndex++;
-          updateDependency(dependencyToUpdate);
-        } else {
-          rl.close();
-          console.log('All updates completed.');
-          printLogo();
-        }
-      };
+        const updateNextDependency = () => {
+          if (currentIndex < dependenciesToUpdate.length) {
+            const dependencyToUpdate = dependenciesToUpdate[currentIndex];
+            currentIndex++;
+            updateDependency(dependencyToUpdate);
+          } else {
+            console.log('All updates completed.');
+            printLogo();
+          }
+        };
 
-      updateNextDependency();
-    } else {
-      console.log('Updating all dependencies...');
-      const updatePromises = dependenciesToUpdate.map((dependencyToUpdate) => {
-        const packageName = dependencyToUpdate.packageName;
-        const latestVersion = dependencyToUpdate.latestVersion;
-
-        console.log(`Updating ${packageName}...`);
-        return new Promise((resolve) => {
-          exec(`npm install ${packageName}@${latestVersion}`, (error) => {
-            if (error) {
-              console.error(`Error updating ${packageName}: ${error}`);
-            } else {
-              console.log(`${packageName} updated to version ${latestVersion}.`);
-            }
-            resolve();
-          });
-        });
-      });
-
-      Promise.all(updatePromises).then(() => {
-        console.log('All updates completed.');
-        printLogo();
-      });
-    }
+        updateNextDependency();
+      }
+    });
   } else {
     console.log('No dependencies require an update.');
     printLogo();
@@ -127,10 +133,10 @@ function printLogo() {
   process.exit();
 }
 
-function startUpdateCheck(interval, dependencies, packageJsonPath, updateAll) {
-  checkForUpdates(dependencies, packageJsonPath, updateAll);
+function startUpdateCheck(interval, dependencies, packageJsonPath, email, receiveReports) {
+  checkForUpdates(dependencies, packageJsonPath, false, email, receiveReports);
   setInterval(() => {
-    checkForUpdates(dependencies, packageJsonPath, updateAll);
+    checkForUpdates(dependencies, packageJsonPath, false, email, receiveReports);
   }, interval);
 }
 
