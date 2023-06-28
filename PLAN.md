@@ -26,5 +26,3 @@
 * Provide visualizations or summary statistics to help users understand the dependency health of their projects.
 
 ## _**These are the key components of the Dependency Update Bot.**_
-
-if error: `npm cache clean --force` and run script again
