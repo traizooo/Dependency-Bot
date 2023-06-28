@@ -18,9 +18,9 @@ The Dependency Update Bot is a developer tool that automates the process of upda
 
 For detailed instructions and examples, please refer to the [User Guide](user-guide.md).
 
-## Contributing
+## Troubleshooting
 
-Contributions to the Dependency Update Bot are welcome! If you encounter any issues, have suggestions, or would like to add new features, please feel free to open an issue or submit a pull request. Refer to the [Contribution Guidelines](CONTRIBUTING.md) for more information.
+If you encounter any issues go to [Troubleshooting](troubleshooting.md)
 
 ## License
 
@@ -28,4 +28,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-For any questions or feedback, please reach out to us at [michal.owsiejew23@gmail.com].
+For any questions or feedback, please reach out to us at michal.owsiejew23@gmail.com.
