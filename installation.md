@@ -16,12 +16,9 @@ To install the Dependency Update Bot, follow these steps:
    ```shell
    git clone https://github.com/traizooo/dependency-bot.git
 
-2. Navigate to the cloned repository:
-   
-   ```shell
-   cd dependency-bot
+2. Copy `scanner.js` to your directory (same as `package.json`) 
 
-4. Run command to activate script:
+3. Run command to activate script:
    
    ```shell
    node scanner.js
