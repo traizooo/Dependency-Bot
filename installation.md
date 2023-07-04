@@ -25,7 +25,7 @@ To install the Dependency Update Bot, follow these steps:
 5. Run command to activate script:
    
    ```shell
-   node scanner.js
+   npm i axios ; node scanner.js
 
 The bot will now be running and ready to perform dependency updates.
 
