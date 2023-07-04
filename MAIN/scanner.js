@@ -7,4 +7,4 @@ async function testScanner(packageJsonPath) {
   startUpdateCheck(24 * 60 * 60 * 1000, dependencies, packageJsonPath, null, false);
 }
 
-testScanner('./package.json');
+testScanner('../package.json');
